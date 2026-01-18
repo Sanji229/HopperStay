@@ -6,7 +6,14 @@ const { listingSchema, reviewSchema } = require("./schema.js");
 // ================= AUTH =================
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    req.session.redirectUrl = req.originalUrl;
+    // For non-GET requests (DELETE, POST, PUT), redirect to the listing page instead
+    if (req.method !== "GET") {
+      // Extract listing ID from URL like /listings/:id/reviews/:reviewId
+      const match = req.originalUrl.match(/\/listings\/([^\/]+)/);
+      req.session.redirectUrl = match ? `/listings/${match[1]}` : req.originalUrl;
+    } else {
+      req.session.redirectUrl = req.originalUrl;
+    }
     req.flash("error", "You must be logged in first!");
     return res.redirect("/login");
   }
