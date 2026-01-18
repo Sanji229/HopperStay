@@ -132,10 +132,12 @@
             name="listing[price]"
             value="<%=listing.price%>"
             type="number"
+            min="1"
             class="form-control"
+            id="price"
             required
           />
-          <div class="invalid-feedback">Price should be valid.</div>
+          <div class="invalid-feedback">Please enter a valid price (positive number only).</div>
         </div>
         <div class="mb-3 col-md-8">
           <label
