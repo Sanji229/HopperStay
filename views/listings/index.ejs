@@ -4,31 +4,71 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid #ebebeb;
+    margin-bottom: 32px;
   }
   .filter {
     text-align: center;
-    margin-top: 2rem;
-    margin-right: 2rem;
-    opacity: 0.7;
+    opacity: 0.65;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 12px;
   }
   .filter:hover {
     opacity: 1;
     cursor: pointer;
+    background-color: #f7f7f7;
+  }
+  .filter i {
+    font-size: 24px;
+    margin-bottom: 6px;
+    display: block;
   }
   .filter p {
-    font-size: 0.8rem;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    color: #222222;
+  }
+  .filter.active {
+    opacity: 1;
+    border-bottom: 2px solid #222222;
+    border-radius: 0;
   }
   .tax-info{
     display:none;
   }
   .tax-toggle{
-    border: 1px solid black;
-    border-radius: 1rem;
-    height: 3.25rem;
-    padding: 1rem;
-    margin-left: 2rem;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-left: auto;
     display: flex;
     align-items: center;
+    background-color: white;
+    transition: all 0.2s ease;
+  }
+  .tax-toggle:hover {
+    border-color: #222222;
+  }
+  .form-check-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  .listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 40px 24px;
+    padding: 0;
+  }
+  @media (max-width: 768px) {
+    .listing-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 32px 16px;
+    }
   }
 </style>
 <div id="filters">
@@ -92,26 +132,29 @@
     </div>
   </div>
 </div>
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+<div class="listing-grid">
   <% for(let listing of allListings){%>
-  <a
-    href="/listings/<%=listing._id%>"
-    class="listing-link"
-  >
-    <div class="card col listing-card">
-      <img
-        src="<%=listing.image.url %>"
-        class="card-img-top"
-        alt="listing_image"
-        style="height: 20rem"
-      />
-      <div class="card-img-overlay"></div>
+  <a href="/listings/<%=listing._id%>" class="listing-link">
+    <div class="listing-card">
+      <div style="position: relative; overflow: hidden; border-radius: 12px;">
+        <img
+          src="<%=listing.image.url %>"
+          class="card-img-top"
+          alt="<%=listing.title%>"
+        />
+        <div class="card-img-overlay"></div>
+      </div>
       <div class="card-body">
-        <p class="card-text">
-          <b><%=listing.title%></b><br />
-          &#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") :
-          "N/A" %>/ night
-          <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
+        <p class="card-text" style="margin-bottom: 4px;">
+          <b><%=listing.title%></b>
+        </p>
+        <p class="card-text" style="color: #717171; font-size: 14px; margin-bottom: 8px;">
+          <%=listing.location%>, <%=listing.country%>
+        </p>
+        <p class="card-text" style="margin-bottom: 0;">
+          <span style="font-weight: 600;">&#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %></span>
+          <span style="color: #717171; font-weight: 400;"> / night</span>
+          <span class="tax-info" style="color: #717171; font-size: 13px;">&nbsp;+18% GST</span>
         </p>
       </div>
     </div>
