@@ -100,7 +100,7 @@
         <div class="detail-section">
           <h3 class="section-title">Where you'll be</h3>
           <p style="color: #717171; margin-bottom: 16px;"><%=listing.location%>, <%=listing.country%></p>
-          <div id="map"></div>
+          <div id="map" style="min-height: 400px; height: 400px; width: 100%; border-radius: 12px; overflow: hidden;"></div>
         </div>
 
         <%if(currentUser && listing.owner && currentUser._id.equals(listing.owner._id)){ %>
