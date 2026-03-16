@@ -1,0 +1,285 @@
+<% layout("/layouts/boilerplate")%>
+<style>
+  .itinerary-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  .itinerary-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .itinerary-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #222222;
+    margin-bottom: 12px;
+  }
+  .itinerary-header p {
+    color: #717171;
+    font-size: 18px;
+  }
+  .itinerary-form {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+  }
+  .form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #222222;
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: #fe424d;
+    box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.1);
+  }
+  .generate-btn {
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(254, 66, 77, 0.4);
+  }
+  .generate-btn i {
+    font-size: 18px;
+  }
+  
+  /* Results */
+  .itinerary-result {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .result-header {
+    background: linear-gradient(135deg, #667eea 0%, #fe424d 100%);
+    padding: 30px;
+    color: white;
+  }
+  .result-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .result-header p {
+    opacity: 0.9;
+    font-size: 16px;
+  }
+  .result-content {
+    padding: 32px;
+    line-height: 1.8;
+    color: #333333;
+  }
+  .result-content h1, .result-content h2, .result-content h3 {
+    color: #222222;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+  .result-content h2 {
+    font-size: 22px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #fe424d;
+    display: inline-block;
+  }
+  .result-content h3 {
+    font-size: 18px;
+    color: #fe424d;
+  }
+  .result-content ul {
+    margin: 12px 0;
+    padding-left: 24px;
+  }
+  .result-content li {
+    margin-bottom: 8px;
+  }
+  .result-content strong {
+    color: #222222;
+  }
+  .result-actions {
+    padding: 24px 32px;
+    background: #f7f7f7;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .action-btn.primary {
+    background: #222222;
+    color: white;
+    border: none;
+  }
+  .action-btn.primary:hover {
+    background: #000000;
+  }
+  .action-btn.secondary {
+    background: white;
+    color: #222222;
+    border: 1px solid #dddddd;
+  }
+  .action-btn.secondary:hover {
+    border-color: #222222;
+  }
+  
+  /* Loading */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 60px;
+  }
+  .loading.active {
+    display: block;
+  }
+  .loading-logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fe424d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .loading-logo i {
+    font-size: 32px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f7f7f7;
+    border-top-color: #fe424d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+  }
+  
+  @media (max-width: 768px) {
+    .itinerary-header h1 {
+      font-size: 28px;
+    }
+    .form-row {
+      flex-direction: column;
+    }
+    .result-header h2 {
+      font-size: 22px;
+    }
+  }
+</style>
+
+<div class="itinerary-container">
+  <div class="itinerary-header">
+    <h1><i class="fa-solid fa-route" style="color: #fe424d;"></i> AI Trip Planner</h1>
+    <p>Let AI create a personalized travel itinerary for your next adventure</p>
+  </div>
+
+  <div class="itinerary-form">
+    <form action="/itinerary" method="POST" id="itineraryForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="place"><i class="fa-solid fa-location-dot"></i> Destination</label>
+          <input type="text" id="place" name="place" placeholder="e.g., Paris, Goa, Tokyo" required value="<%= typeof place !== 'undefined' ? place : '' %>">
+        </div>
+        <div class="form-group">
+          <label for="days"><i class="fa-solid fa-calendar-days"></i> Number of Days</label>
+          <input type="number" id="days" name="days" placeholder="e.g., 5" min="1" max="30" required value="<%= typeof days !== 'undefined' ? days : '' %>">
+        </div>
+      </div>
+      <button type="submit" class="generate-btn" id="generateBtn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Generate Itinerary
+      </button>
+    </form>
+  </div>
+
+  <div class="loading" id="loadingDiv">
+    <div class="loading-logo">
+      <i class="fa-regular fa-compass"></i>
+      <span>HopperStay</span>
+    </div>
+    <div class="spinner"></div>
+    <p style="color: #717171; font-size: 16px;">Creating your personalized itinerary...</p>
+  </div>
+
+  <% if (itinerary) { %>
+  <div class="itinerary-result">
+    <div class="result-header">
+<h2><i class="fa-regular fa-compass"></i> Your <%= days %>-Day <%= place %> Itinerary</h2>
+      <p>Personalized travel plan generated by AI</p>
+    </div>
+    <div class="result-content">
+      <%- itinerary %>
+    </div>
+    <div class="result-actions">
+      <button class="action-btn primary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print Itinerary
+      </button>
+      <a href="/itinerary" class="action-btn secondary">
+        <i class="fa-solid fa-plus"></i> Create New
+      </a>
+      <a href="/listings" class="action-btn secondary">
+        <i class="fa-solid fa-bed"></i> Find Stays
+      </a>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  document.getElementById('itineraryForm').addEventListener('submit', function() {
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('generateBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+    document.getElementById('loadingDiv').classList.add('active');
+  });
+</script>

@@ -4,6 +4,37 @@
   const listing=<%-JSON.stringify(listing)%>;
 </script>
 
+<%
+  const categoryIcons = {
+    "Trending": "fa-solid fa-fire",
+    "Rooms": "fa-solid fa-bed",
+    "Iconic Cities": "fa-solid fa-mountain-city",
+    "Mountains": "fa-solid fa-mountain",
+    "Castles": "fa-brands fa-fort-awesome",
+    "Amazing Pools": "fa-solid fa-person-swimming",
+    "Camping": "fa-solid fa-campground",
+    "Farms": "fa-solid fa-cow",
+    "Arctic": "fa-regular fa-snowflake",
+    "Domes": "fa-solid fa-igloo",
+    "Boats": "fa-solid fa-ship",
+    "Beach": "fa-solid fa-umbrella-beach"
+  };
+  const amenityIcons = {
+    "Free WiFi": "fa-solid fa-wifi",
+    "Kitchen": "fa-solid fa-utensils",
+    "Free Parking": "fa-solid fa-square-parking",
+    "Pool": "fa-solid fa-person-swimming",
+    "Air Conditioning": "fa-solid fa-wind",
+    "Heating": "fa-solid fa-temperature-high",
+    "TV": "fa-solid fa-tv",
+    "Washer": "fa-solid fa-soap",
+    "Gym": "fa-solid fa-dumbbell",
+    "Pet Friendly": "fa-solid fa-paw",
+    "Beachfront": "fa-solid fa-umbrella-beach",
+    "Mountain View": "fa-solid fa-mountain"
+  };
+%>
+
 <style>
   .show-container {
     max-width: 1200px;
@@ -11,115 +42,346 @@
     padding: 24px 40px;
   }
   .show-title {
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
     margin-bottom: 8px;
     color: #222222;
   }
   .show-subtitle {
     font-size: 14px;
     color: #717171;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  /* Hero Image */
+  .show-image-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 36px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    background: #f0f0f0;
   }
   .show-image {
     width: 100%;
-    height: 480px;
+    height: 520px;
     object-fit: cover;
-    border-radius: 16px;
-    margin-bottom: 32px;
+    display: block;
+    transition: transform 0.4s ease;
   }
+  .show-image-wrapper:hover .show-image {
+    transform: scale(1.02);
+  }
+  .show-image-gradient {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  /* Category Badge on Image */
+  .show-category-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #222222;
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    letter-spacing: 0.2px;
+  }
+  .show-category-badge i {
+    color: #fe424d;
+    font-size: 14px;
+  }
+  /* Location badge on image */
+  .show-location-badge {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    color: #222222;
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .show-location-badge i {
+    color: #fe424d;
+  }
+  /* Detail Sections */
   .detail-section {
-    padding: 32px 0;
+    padding: 28px 0;
     border-bottom: 1px solid #ebebeb;
   }
   .detail-section:last-of-type {
     border-bottom: none;
   }
   .section-title {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     margin-bottom: 16px;
     color: #222222;
   }
-  .owner-badge {
-    display: inline-flex;
+  /* Host Info */
+  .host-info {
+    display: flex;
     align-items: center;
-    padding: 8px 16px;
-    background-color: #f7f7f7;
-    border-radius: 24px;
-    font-size: 14px;
-    color: #222222;
+    gap: 14px;
     margin-bottom: 16px;
   }
+  .host-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #fe424d, #e6000f);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .host-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222222;
+    margin: 0;
+  }
+  .host-label {
+    font-size: 13px;
+    color: #717171;
+    margin: 2px 0 0;
+  }
+  /* Amenities */
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .amenity-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1.5px solid #ebebeb;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #222222;
+    background: white;
+    transition: all 0.2s ease;
+  }
+  .amenity-chip:hover {
+    border-color: #fe424d;
+    background: #fff5f5;
+    color: #fe424d;
+  }
+  .amenity-chip i {
+    font-size: 17px;
+    color: #fe424d;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  /* Booking Card */
   .price-box {
     border: 1px solid #dddddd;
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 28px;
     background-color: white;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
     position: sticky;
     top: 100px;
   }
   .price-amount {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     color: #222222;
   }
+  .reserve-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(254,66,77,0.35);
+    margin-top: 16px;
+  }
+  .reserve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(254,66,77,0.45);
+  }
+  .date-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1.5px solid #dddddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+  .date-input-group {
+    padding: 10px 14px;
+  }
+  .date-input-group:first-child {
+    border-right: 1px solid #dddddd;
+  }
+  .date-input-group label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #222222;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .date-input-group input[type="date"] {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #717171;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+  }
+  .price-breakdown {
+    font-size: 14px;
+    color: #717171;
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  /* Review Card */
   .review-card {
     border: 1px solid #ebebeb;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s ease;
+  }
+  .review-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  /* Responsive */
+  @media (max-width: 768px) {
+    .show-container { padding: 16px 16px; }
+    .show-image { height: 260px; }
+    .amenities-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 
 <div class="show-container">
-    <h1 class="show-title"><%=listing.title%></h1>
-    <p class="show-subtitle">
-      <i class="fa-solid fa-location-dot"></i> <%=listing.location%>, <%=listing.country%>
-    </p>
-    
+  <h1 class="show-title"><%=listing.title%></h1>
+  <p class="show-subtitle">
+    <i class="fa-solid fa-location-dot" style="color:#fe424d;"></i>
+    <%=listing.location%>, <%=listing.country%>
+  </p>
+
+  <!-- Hero Image with Badges -->
+  <div class="show-image-wrapper">
     <img
-      src="<%=listing.image.url%>"
+      src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=60' %>"
       class="show-image"
       alt="<%=listing.title%>"
     />
+    <div class="show-image-gradient"></div>
 
-    <div class="row">
-      <div class="col-lg-7">
-        <div class="detail-section">
-          <div class="owner-badge">
-            <i class="fa-solid fa-user" style="margin-right: 8px;"></i>
-            Hosted by <%= listing.owner ? listing.owner.username : 'Unknown' %>
+    <% if(listing.category && categoryIcons[listing.category]) { %>
+    <div class="show-category-badge">
+      <i class="<%= categoryIcons[listing.category] %>"></i>
+      <%=listing.category%>
+    </div>
+    <% } %>
+
+    <div class="show-location-badge">
+      <i class="fa-solid fa-location-dot"></i>
+      <%=listing.location%>, <%=listing.country%>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+
+      <!-- Host Info + Description -->
+      <div class="detail-section">
+        <div class="host-info">
+          <div class="host-avatar">
+            <i class="fa-solid fa-user"></i>
           </div>
-          <p style="font-size: 16px; line-height: 1.6; color: #222222;">
-            <%=listing.description%>
-          </p>
-        </div>
-
-        <div class="detail-section">
-          <h3 class="section-title">Where you'll be</h3>
-          <p style="color: #717171; margin-bottom: 16px;"><%=listing.location%>, <%=listing.country%></p>
-          <div id="map" style="min-height: 400px; height: 400px; width: 100%; border-radius: 12px; overflow: hidden;"></div>
-        </div>
-
-        <%if(currentUser && listing.owner && currentUser._id.equals(listing.owner._id)){ %>
-        <div class="detail-section">
-          <div class="d-flex gap-2">
-            <a href="/listings/<%=listing._id%>/edit" class="btn edit-btn" style="flex: 1;">
-              <i class="fa-solid fa-pen-to-square"></i> Edit Listing
-            </a>
-            <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" style="flex: 1;">
-              <button class="btn btn-dark w-100">
-                <i class="fa-solid fa-trash"></i> Delete
-              </button>
-            </form>
+          <div>
+            <p class="host-name"><%= listing.owner ? listing.owner.username : 'Unknown' %></p>
+            <p class="host-label">Host</p>
           </div>
         </div>
-        <%}%>
+        <p style="font-size: 15px; line-height: 1.75; color: #444444; margin: 0;">
+          <%=listing.description%>
+        </p>
+      </div>
 
-        <div class="detail-section">
-     
+      <!-- Amenities -->
+      <% if(listing.amenities && listing.amenities.length > 0) { %>
+      <div class="detail-section">
+        <h3 class="section-title">What this place offers</h3>
+        <div class="amenities-grid">
+          <% for(let amenity of listing.amenities) { %>
+          <div class="amenity-chip">
+            <i class="<%= amenityIcons[amenity] || 'fa-solid fa-check' %>"></i>
+            <%= amenity %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Map -->
+      <div class="detail-section">
+        <h3 class="section-title">Where you'll be</h3>
+        <p style="color: #717171; margin-bottom: 14px; font-size: 14px;"><%=listing.location%>, <%=listing.country%></p>
+        <div id="map" style="min-height: 380px; height: 380px; width: 100%; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1);"></div>
+      </div>
+
+      <!-- Owner Actions -->
+      <%if(currentUser && listing.owner && currentUser._id.equals(listing.owner._id)){ %>
+      <div class="detail-section">
+        <h3 class="section-title">Manage Listing</h3>
+        <div class="d-flex gap-2">
+          <a href="/listings/<%=listing._id%>/edit" class="btn edit-btn" style="flex: 1; padding: 12px; border-radius: 10px; font-weight: 600;">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Listing
+          </a>
+          <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" style="flex: 1;">
+            <button class="btn btn-dark w-100" style="padding: 12px; border-radius: 10px; font-weight: 600;">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+          </form>
+        </div>
+      </div>
+      <%}%>
+
+      <!-- Reviews -->
+      <div class="detail-section">
         <% if(currentUser){ %>
         <h3 class="section-title">Leave a Review</h3>
         <form
@@ -127,145 +389,138 @@
           method="POST"
           novalidate
           class="needs-validation"
+          style="margin-bottom: 32px;"
         >
-        
-        <div class="mb-3 mt-3">
-          <label
-            for="rating"
-            class="form-label"
-            >Rating</label
-          >
-        <fieldset class="starability-slot">
-          
-          
-          <input
-            type="radio"
-            id="no-rate"
-            class="input-no-rate"
-            name="review[rating]"
-            value="1"
-            checked
-            aria-label="No rating."
-          />
-          <input
-            type="radio"
-            id="first-rate1"
-            name="review[rating]"
-            value="1"
-          />
-          <label
-            for="first-rate1"
-            title="Terrible"
-            >1 star</label
-          >
-          <input
-            type="radio"
-            id="first-rate2"
-            name="review[rating]"
-            value="2"
-          />
-          <label
-            for="first-rate2"
-            title="Not good"
-            >2 stars</label
-          >
-          <input
-            type="radio"
-            id="first-rate3"
-            name="review[rating]"
-            value="3"
-          />
-          <label
-            for="first-rate3"
-            title="Average"
-            >3 stars</label
-          >
-          <input
-            type="radio"
-            id="first-rate4"
-            name="review[rating]"
-            value="4"
-          />
-          <label
-            for="first-rate4"
-            title="Very good"
-            >4 stars</label
-          >
-          <input
-            type="radio"
-            id="first-rate5"
-            name="review[rating]"
-            value="5"
-          />
-          <label
-            for="first-rate5"
-            title="Amazing"
-            >5 stars</label
-          >
-        </fieldset>
-        </div>
-        <div class="mb-3 mt-3">
-          <label
-            for="comment"
-            class="form-label"
-            >Comments</label
-          >
-          <textarea
-            name="review[comment]"
-            id="comment"
-            cols="30"
-            rows="5"
-            class="form-control"
-            required
-          ></textarea>
-          <div class="invalid-feedback">
-            Please add some comments for review.
+          <div class="mb-3">
+            <label for="rating" class="form-label" style="font-weight: 600;">Rating</label>
+            <fieldset class="starability-slot">
+              <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+              <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
           </div>
-        </div>
-          <button class="btn btn-dark" style="background-color: #222222; border: none; padding: 12px 24px; border-radius: 8px;">
+          <div class="mb-3">
+            <label for="comment" class="form-label" style="font-weight: 600;">Comments</label>
+            <textarea name="review[comment]" id="comment" rows="4" class="form-control" required placeholder="Share your experience..."></textarea>
+            <div class="invalid-feedback">Please add some comments for review.</div>
+          </div>
+          <button class="btn" style="background-color: #222222; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600;">
             Submit Review
           </button>
         </form>
         <%}%>
 
         <% if(listing.reviews.length > 0){ %>
-        <div style="margin-top: 32px;">
-          <h3 class="section-title">Reviews</h3>
-          <% for(review of listing.reviews){%>
-          <div class="review-card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-              <div>
-                <h6 style="font-weight: 600; margin-bottom: 4px;">@<%=review.author.username%></h6>
-                <p class="starability-result" data-rating=<%=review.rating%> style="margin-bottom: 8px;"></p>
-              </div>
-              <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
-                <button class="btn btn-sm" style="color: #717171;">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </form>
+        <h3 class="section-title">Reviews <span style="font-size:16px; color:#717171; font-weight:500;">(<%=listing.reviews.length%>)</span></h3>
+        <% for(review of listing.reviews){%>
+        <div class="review-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div>
+              <h6 style="font-weight: 700; margin-bottom: 4px; color:#222;">@<%=review.author.username%></h6>
+              <p class="starability-result" data-rating=<%=review.rating%> style="margin-bottom: 0;"></p>
             </div>
-            <p style="color: #222222; line-height: 1.5; margin: 0;"><%=review.comment%></p>
+            <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
+              <button class="btn btn-sm" style="color: #aaa; padding: 4px 8px;">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
           </div>
-          <% } %>
+          <p style="color: #444; line-height: 1.6; margin: 0; font-size: 14px;"><%=review.comment%></p>
         </div>
         <% } %>
-        </div>
+        <% } %>
       </div>
 
-      <div class="col-lg-5">
-        <div class="price-box">
-          <p class="price-amount">
-            &#8377;<%=listing.price.toLocaleString("en-IN")%>
-            <span style="font-size: 16px; font-weight: 400; color: #717171;">/ night</span>
-          </p>
-          <hr style="margin: 20px 0;">
-          <div style="margin-bottom: 12px;">
-            <i class="fa-solid fa-location-dot" style="color: #717171; margin-right: 8px;"></i>
-            <span style="color: #222222;"><%=listing.location%>, <%=listing.country%></span>
+    </div>
+
+    <!-- Booking Card -->
+    <div class="col-lg-5">
+      <div class="price-box">
+        <p class="price-amount">
+          &#8377;<%=listing.price.toLocaleString("en-IN")%>
+          <span style="font-size: 16px; font-weight: 400; color: #717171;">/ night</span>
+        </p>
+
+        <div class="date-inputs">
+          <div class="date-input-group">
+            <label>Check-in</label>
+            <input type="date" id="checkin" />
+          </div>
+          <div class="date-input-group">
+            <label>Check-out</label>
+            <input type="date" id="checkout" />
           </div>
         </div>
+
+        <p id="totalDisplay" style="font-size: 14px; color: #717171; margin-top: 12px; text-align: center;">Select check-in and check-out to see the total.</p>
+
+        <button class="reserve-btn" onclick="handleReserve()">Reserve</button>
+
+        <hr style="margin: 20px 0; border-color: #ebebeb;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <i class="fa-solid fa-location-dot" style="color: #fe424d;"></i>
+          <span style="color: #222; font-size: 14px;"><%=listing.location%>, <%=listing.country%></span>
+        </div>
+        <% if(listing.category) { %>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="<%= categoryIcons[listing.category] || 'fa-solid fa-tag' %>" style="color: #fe424d;"></i>
+          <span style="color: #222; font-size: 14px; font-weight: 600;"><%=listing.category%></span>
+        </div>
+        <% } %>
       </div>
     </div>
   </div>
+</div>
 
 <script src="/js/map.js"></script>
+<script>
+  const checkin = document.getElementById('checkin');
+  const checkout = document.getElementById('checkout');
+  const totalDisplay = document.getElementById('totalDisplay');
+  const pricePerNight = <%=listing.price%>;
+
+  function calcTotal() {
+    if (checkin.value && checkout.value) {
+      const d1 = new Date(checkin.value);
+      const d2 = new Date(checkout.value);
+      const nights = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+      if (nights > 0) {
+        const total = (nights * pricePerNight).toLocaleString('en-IN');
+        totalDisplay.textContent = nights + ' night' + (nights > 1 ? 's' : '') + ' × ₹' + pricePerNight.toLocaleString('en-IN') + ' = ₹' + total;
+        totalDisplay.style.color = '#222';
+        totalDisplay.style.fontWeight = '600';
+      } else {
+        totalDisplay.textContent = 'Check-out must be after check-in.';
+        totalDisplay.style.color = '#fe424d';
+        totalDisplay.style.fontWeight = '400';
+      }
+    }
+  }
+
+  checkin.addEventListener('change', calcTotal);
+  checkout.addEventListener('change', calcTotal);
+
+  function handleReserve() {
+    if (!checkin.value || !checkout.value) {
+      totalDisplay.textContent = 'Please select both check-in and check-out dates.';
+      totalDisplay.style.color = '#fe424d';
+      return;
+    }
+    const d1 = new Date(checkin.value);
+    const d2 = new Date(checkout.value);
+    if (d2 <= d1) {
+      totalDisplay.textContent = 'Check-out must be after check-in.';
+      totalDisplay.style.color = '#fe424d';
+      return;
+    }
+    alert('Reservation confirmed! ✔️');
+  }
+</script>

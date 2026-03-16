@@ -28,6 +28,7 @@ body{
  .nav-link:hover {
     color: #fe424d !important;
  }
+
 /* Footer */
 .f-info-links a{
    text-decoration: none;
@@ -46,7 +47,9 @@ body{
    justify-content: center;
    padding: 12px 0;
 }
-
+.f-info-socials a{
+   text-decoration: none;
+}
 .f-info-socials i{
    font-size: 1.3rem;
    margin: 0 12px;
@@ -79,24 +82,32 @@ body{
 .listing-card{
    border: none !important;
    margin-bottom: 2rem;
-   transition: transform 0.2s ease, box-shadow 0.2s ease;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
    cursor: pointer;
+   border-radius: 16px;
+   overflow: hidden;
 }
 .listing-card:hover {
-   transform: translateY(-4px);
+   transform: translateY(-8px);
+   box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+.card-img-container {
+   position: relative;
+   overflow: hidden;
+   border-radius: 16px;
 }
 .card-img-top{
-   border-radius: 12px !important;
+   border-radius: 16px !important;
    width: 100% !important;
    object-fit: cover !important;
    aspect-ratio: 1 / 1;
-   transition: transform 0.3s ease;
+   transition: transform 0.4s ease;
 }
 .listing-card:hover .card-img-top {
-   transform: scale(1.02);
+   transform: scale(1.05);
 }
 .card-body{
-   padding: 12px 0 !important;
+   padding: 14px 4px !important;
 }
 .card-text{
    color: #222222;
@@ -111,14 +122,72 @@ body{
    text-decoration: none;
    color: inherit;
 }
+
+/* Location Tags */
+.location-tags {
+   position: absolute;
+   top: 12px;
+   left: 12px;
+   display: flex;
+   gap: 8px;
+   flex-wrap: wrap;
+   z-index: 2;
+}
+.location-tag {
+   display: inline-flex;
+   align-items: center;
+   gap: 5px;
+   background: white;
+   padding: 6px 12px;
+   border-radius: 20px;
+   font-size: 12px;
+   font-weight: 600;
+   color: #222222;
+   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+   backdrop-filter: blur(10px);
+}
+.location-tag i {
+   color: #fe424d;
+   font-size: 10px;
+}
+.category-badge {
+   position: absolute;
+   top: 12px;
+   right: 12px;
+   display: inline-flex;
+   align-items: center;
+   gap: 5px;
+   background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+   color: white;
+   padding: 6px 12px;
+   border-radius: 20px;
+   font-size: 11px;
+   font-weight: 600;
+   z-index: 2;
+   box-shadow: 0 2px 8px rgba(254, 66, 77, 0.4);
+   white-space: nowrap;
+}
+
 /* Card Effect */
 .card-img-overlay{
    opacity: 0;
-   border-radius: 12px;
+   border-radius: 16px;
 }
 .card-img-overlay:hover{
    opacity: 0.08;
    background-color: black;
+}
+
+/* Card Price */
+.card-price {
+   font-size: 17px;
+   font-weight: 700;
+   color: #222222;
+}
+.card-price span {
+   font-weight: 400;
+   color: #717171;
+   font-size: 14px;
 }
 /* New Page */
 .add-btn{

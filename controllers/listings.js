@@ -3,9 +3,121 @@ const mbxGeocoding= require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
+const ITEMS_PER_PAGE = 12;
+
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({}).populate("owner");
-  res.render("listings/index.ejs", { allListings });
+  const { minPrice, maxPrice, category, sort, page } = req.query;
+  const currentPage = parseInt(page) || 1;
+  
+  // Build filter query
+  let filterQuery = {};
+  
+  // Price filters
+  if (minPrice || maxPrice) {
+    filterQuery.price = {};
+    if (minPrice) filterQuery.price.$gte = parseInt(minPrice);
+    if (maxPrice) filterQuery.price.$lte = parseInt(maxPrice);
+  }
+  
+  // Category filter
+  if (category && category.trim() !== "") {
+    filterQuery.category = category;
+  }
+  
+  // Build sort options
+  let sortOptions = {};
+  if (sort === "price_asc") {
+    sortOptions.price = 1;
+  } else if (sort === "price_desc") {
+    sortOptions.price = -1;
+  } else if (sort === "newest") {
+    sortOptions._id = -1;
+  }
+  
+  // Get total count for pagination
+  const totalListings = await Listing.countDocuments(filterQuery);
+  const totalPages = Math.ceil(totalListings / ITEMS_PER_PAGE);
+  
+  // Execute query with pagination
+  let query = Listing.find(filterQuery)
+    .populate("owner")
+    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE);
+    
+  if (Object.keys(sortOptions).length > 0) {
+    query = query.sort(sortOptions);
+  }
+  
+  const allListings = await query;
+  
+  // Store filters for form state
+  const filters = {
+    minPrice: minPrice || "",
+    maxPrice: maxPrice || "",
+    category: category || "",
+    sort: sort || ""
+  };
+  
+  // Pagination data
+  const pagination = {
+    currentPage,
+    totalPages,
+    totalListings,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1
+  };
+  
+  res.render("listings/index.ejs", { allListings, searchQuery: "", currentCategory: category || "", filters, pagination });
+};
+
+module.exports.search = async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.trim() === "") {
+    return res.redirect("/listings");
+  }
+  
+  const searchRegex = new RegExp(q, "i"); // case-insensitive search
+  const allListings = await Listing.find({
+    $or: [
+      { title: searchRegex },
+      { location: searchRegex },
+      { country: searchRegex },
+      { description: searchRegex }
+    ]
+  }).populate("owner");
+  
+  const filters = { minPrice: "", maxPrice: "", category: "", sort: "" };
+  const pagination = { currentPage: 1, totalPages: 1, totalListings: allListings.length, hasNextPage: false, hasPrevPage: false };
+  res.render("listings/index.ejs", { allListings, searchQuery: q, currentCategory: "", filters, pagination });
+};
+
+module.exports.filter = async (req, res) => {
+  const { category } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const validCategories = ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats", "Beach"];
+  
+  if (!validCategories.includes(category)) {
+    return res.redirect("/listings");
+  }
+  
+  const totalListings = await Listing.countDocuments({ category });
+  const totalPages = Math.ceil(totalListings / ITEMS_PER_PAGE);
+  
+  const allListings = await Listing.find({ category })
+    .populate("owner")
+    .skip((page - 1) * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE);
+    
+  const filters = { minPrice: "", maxPrice: "", category: category, sort: "" };
+  const pagination = {
+    currentPage: page,
+    totalPages,
+    totalListings,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1
+  };
+  
+  res.render("listings/index.ejs", { allListings, searchQuery: "", currentCategory: category, filters, pagination });
 };
 
 module.exports.renderNewForm = (req, res) => {
@@ -21,8 +133,22 @@ module.exports.showListing = async (req, res) => {
     req.flash("error", "Listing Does Not Exist!");
     return res.redirect("/listings");
   }
-  console.log(listing);
-  res.render("listings/show.ejs", { listing });
+
+  // Similar listings: same category first, then fill with others
+  let similarListings = await Listing.find({
+    _id: { $ne: listing._id },
+    ...(listing.category ? { category: listing.category } : {}),
+  }).limit(4);
+
+  if (similarListings.length < 4) {
+    const excludeIds = [listing._id, ...similarListings.map((l) => l._id)];
+    const more = await Listing.find({ _id: { $nin: excludeIds } }).limit(
+      4 - similarListings.length
+    );
+    similarListings = [...similarListings, ...more];
+  }
+
+  res.render("listings/show.ejs", { listing, similarListings });
 };
 
 module.exports.createListing = async (req, res) => {
@@ -72,8 +198,10 @@ module.exports.renderEditForm = async (req, res) => {
     req.flash("error", "Listing Does Not Exist!");
     return res.redirect("/listings");
   }
-  let originalImageUrl = listing.image.url;
-  originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+  let originalImageUrl = (listing.image && listing.image.url) ? listing.image.url : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=60';
+  if (originalImageUrl.includes('/upload')) {
+    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+  }
   res.render("listings/edit.ejs", { listing, originalImageUrl });
 };
 

@@ -19,6 +19,12 @@ router
     wrapAsync(listingController.createListing)
 );
 
+// SEARCH ROUTE
+router.get("/search", wrapAsync(listingController.search));
+
+// FILTER BY CATEGORY ROUTE
+router.get("/filter/:category", wrapAsync(listingController.filter));
+
 //NEW ROUTE
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 

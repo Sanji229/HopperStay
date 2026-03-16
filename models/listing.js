@@ -8,12 +8,17 @@ const listingSchema=new Schema({
     },    
     description:String,
     image:{
-        filename:String,
-        url:String,
+        filename: { type: String, default: "" },
+        url: { type: String, default: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=60" },
     },
     price:Number,
     location:String,
     country:String,
+    category: {
+        type: String,
+        enum: ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats", "Beach"],
+    },
+    amenities: [String],
     reviews:[
         {
             type:Schema.Types.ObjectId,

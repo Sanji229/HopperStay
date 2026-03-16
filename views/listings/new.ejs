@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate")%>
 <style>
   .form-container {
-    max-width: 700px;
+    max-width: 760px;
     margin: 40px auto;
     padding: 40px;
     background: white;
@@ -10,9 +10,31 @@
   }
   .form-title {
     font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
     color: #222222;
+  }
+  .form-subtitle {
+    color: #717171;
+    font-size: 15px;
+    margin-bottom: 36px;
+  }
+  .form-section {
+    border-top: 1px solid #ebebeb;
+    padding-top: 28px;
+    margin-top: 28px;
+  }
+  .form-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222222;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-section-title i {
+    color: #fe424d;
   }
   .form-label {
     font-weight: 600;
@@ -28,31 +50,122 @@
     transition: all 0.2s ease;
   }
   .form-control:focus {
-    border-color: #222222;
-    box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.1);
+    border-color: #fe424d;
+    box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.1);
   }
   textarea.form-control {
     min-height: 120px;
     resize: vertical;
   }
+  /* Category Tags */
+  .category-tags {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+  }
+  .category-tag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 10px;
+    border: 2px solid #ebebeb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    font-size: 12px;
+    font-weight: 600;
+    color: #717171;
+    text-align: center;
+    user-select: none;
+  }
+  .category-tag i {
+    font-size: 22px;
+    color: #717171;
+    transition: color 0.2s ease;
+  }
+  .category-tag:hover {
+    border-color: #222222;
+    color: #222222;
+  }
+  .category-tag:hover i {
+    color: #222222;
+  }
+  .category-tag.selected {
+    border-color: #fe424d;
+    background: #fff5f5;
+    color: #fe424d;
+  }
+  .category-tag.selected i {
+    color: #fe424d;
+  }
+  /* Amenities */
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .amenity-item input[type="checkbox"] {
+    display: none;
+  }
+  .amenity-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 2px solid #ebebeb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 600;
+    color: #717171;
+    background: white;
+  }
+  .amenity-label i {
+    font-size: 16px;
+    color: #717171;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+  .amenity-label:hover {
+    border-color: #222222;
+    color: #222222;
+  }
+  .amenity-label:hover i {
+    color: #222222;
+  }
+  .amenity-item input:checked + .amenity-label {
+    border-color: #fe424d;
+    background: #fff5f5;
+    color: #fe424d;
+  }
+  .amenity-item input:checked + .amenity-label i {
+    color: #fe424d;
+  }
   .submit-btn {
-    background-color: #fe424d;
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 14px 32px;
-    font-weight: 600;
+    border-radius: 10px;
+    padding: 16px 32px;
+    font-weight: 700;
     font-size: 16px;
     width: 100%;
     transition: all 0.2s ease;
+    margin-top: 8px;
   }
   .submit-btn:hover {
-    background-color: #e6000f;
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(254, 66, 77, 0.4);
   }
 </style>
 <div class="form-container">
-    <h1 class="form-title">Create a New Listing</h1>
+  <h1 class="form-title">Create a New Listing</h1>
+  <p class="form-subtitle">Fill in the details below to list your space on HopperStay.</p>
     <form
       method="POST"
       action="/listings"
@@ -154,7 +267,107 @@
         <div class="invalid-feedback">Location should be valid.</div>
       </div>
 
-      <button class="submit-btn mt-4">Create Listing</button>
+      <!-- Category Tags -->
+      <div class="form-section">
+        <p class="form-section-title"><i class="fa-solid fa-tag"></i> Category</p>
+        <input type="hidden" name="listing[category]" id="categoryInput" required>
+        <div class="category-tags" id="categoryTags">
+          <div class="category-tag" data-value="Trending"><i class="fa-solid fa-fire"></i>Trending</div>
+          <div class="category-tag" data-value="Rooms"><i class="fa-solid fa-bed"></i>Rooms</div>
+          <div class="category-tag" data-value="Iconic Cities"><i class="fa-solid fa-mountain-city"></i>Iconic Cities</div>
+          <div class="category-tag" data-value="Mountains"><i class="fa-solid fa-mountain"></i>Mountains</div>
+          <div class="category-tag" data-value="Castles"><i class="fa-brands fa-fort-awesome"></i>Castles</div>
+          <div class="category-tag" data-value="Amazing Pools"><i class="fa-solid fa-person-swimming"></i>Amazing Pools</div>
+          <div class="category-tag" data-value="Camping"><i class="fa-solid fa-campground"></i>Camping</div>
+          <div class="category-tag" data-value="Farms"><i class="fa-solid fa-cow"></i>Farms</div>
+          <div class="category-tag" data-value="Arctic"><i class="fa-regular fa-snowflake"></i>Arctic</div>
+          <div class="category-tag" data-value="Domes"><i class="fa-solid fa-igloo"></i>Domes</div>
+          <div class="category-tag" data-value="Boats"><i class="fa-solid fa-ship"></i>Boats</div>
+          <div class="category-tag" data-value="Beach"><i class="fa-solid fa-umbrella-beach"></i>Beach</div>
+        </div>
+        <div class="invalid-feedback" id="categoryError" style="display:none; color:#dc3545; font-size:13px; margin-top:8px;">Please select a category.</div>
+      </div>
+
+      <!-- Amenities -->
+      <div class="form-section">
+        <p class="form-section-title"><i class="fa-solid fa-star"></i> Amenities</p>
+        <div class="amenities-grid">
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Free WiFi" id="wifi">
+            <label class="amenity-label" for="wifi"><i class="fa-solid fa-wifi"></i>Free WiFi</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Kitchen" id="kitchen">
+            <label class="amenity-label" for="kitchen"><i class="fa-solid fa-utensils"></i>Kitchen</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Free Parking" id="parking">
+            <label class="amenity-label" for="parking"><i class="fa-solid fa-square-parking"></i>Free Parking</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Pool" id="pool">
+            <label class="amenity-label" for="pool"><i class="fa-solid fa-person-swimming"></i>Pool</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Air Conditioning" id="ac">
+            <label class="amenity-label" for="ac"><i class="fa-solid fa-wind"></i>Air Conditioning</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Heating" id="heating">
+            <label class="amenity-label" for="heating"><i class="fa-solid fa-temperature-high"></i>Heating</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="TV" id="tv">
+            <label class="amenity-label" for="tv"><i class="fa-solid fa-tv"></i>TV</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Washer" id="washer">
+            <label class="amenity-label" for="washer"><i class="fa-solid fa-soap"></i>Washer</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Gym" id="gym">
+            <label class="amenity-label" for="gym"><i class="fa-solid fa-dumbbell"></i>Gym</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Pet Friendly" id="pets">
+            <label class="amenity-label" for="pets"><i class="fa-solid fa-paw"></i>Pet Friendly</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Beachfront" id="beachfront">
+            <label class="amenity-label" for="beachfront"><i class="fa-solid fa-umbrella-beach"></i>Beachfront</label>
+          </div>
+          <div class="amenity-item">
+            <input type="checkbox" name="listing[amenities][]" value="Mountain View" id="mountainview">
+            <label class="amenity-label" for="mountainview"><i class="fa-solid fa-mountain"></i>Mountain View</label>
+          </div>
+        </div>
+      </div>
+
+      <button class="submit-btn mt-4" type="submit">Create Listing</button>
     </form>
 </div>
 <script src="/js/script.js"></script>
+<script>
+  // Category tag selection
+  const tags = document.querySelectorAll('.category-tag');
+  const categoryInput = document.getElementById('categoryInput');
+  const categoryError = document.getElementById('categoryError');
+
+  tags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      tags.forEach(t => t.classList.remove('selected'));
+      tag.classList.add('selected');
+      categoryInput.value = tag.dataset.value;
+      categoryError.style.display = 'none';
+    });
+  });
+
+  // Validate category on submit
+  document.querySelector('form').addEventListener('submit', function(e) {
+    if (!categoryInput.value) {
+      e.preventDefault();
+      categoryError.style.display = 'block';
+      document.getElementById('categoryTags').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+</script>

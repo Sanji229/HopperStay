@@ -1,121 +1,398 @@
 <% layout("/layouts/boilerplate")%>
 <style>
+  /* Advanced Filter Bar */
+  .advanced-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 24px 28px;
+    background: white;
+    border-radius: 16px;
+    margin-top: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #ebebeb;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 150px;
+  }
+  .filter-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #717171;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-group input,
+  .filter-group select {
+    padding: 12px 16px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #f7f7f7;
+    transition: all 0.2s ease;
+    color: #222222;
+  }
+  .filter-group input::placeholder {
+    color: #b0b0b0;
+  }
+  .filter-group input:focus,
+  .filter-group select:focus {
+    outline: none;
+    border-color: #fe424d;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.1);
+  }
+  .filter-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23717171' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+  .filter-buttons {
+    display: flex;
+    gap: 12px;
+    padding-top: 24px;
+  }
+  .btn-apply {
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.3);
+  }
+  .btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(254, 66, 77, 0.4);
+  }
+  .btn-reset {
+    background-color: white;
+    color: #717171;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .btn-reset:hover {
+    border-color: #222222;
+    color: #222222;
+    background: #f7f7f7;
+  }
+  
+  /* Icon Filters */
   #filters {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 24px;
-    padding: 20px 0;
+    gap: 8px;
+    padding: 16px 0;
     border-bottom: 1px solid #ebebeb;
     margin-bottom: 32px;
+    overflow-x: auto;
   }
   .filter {
     text-align: center;
-    opacity: 0.65;
+    opacity: 0.7;
     transition: all 0.2s ease;
-    padding: 8px 12px;
+    padding: 12px 16px;
     border-radius: 12px;
+    border: 1px solid transparent;
+    min-width: 70px;
   }
   .filter:hover {
     opacity: 1;
     cursor: pointer;
     background-color: #f7f7f7;
+    border-color: #ebebeb;
+  }
+  a.filter {
+    text-decoration: none;
+    color: inherit;
   }
   .filter i {
-    font-size: 24px;
-    margin-bottom: 6px;
+    font-size: 22px;
+    margin-bottom: 8px;
     display: block;
+    color: #717171;
+  }
+  .filter:hover i {
+    color: #222222;
   }
   .filter p {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     margin: 0;
+    color: #717171;
+    white-space: nowrap;
+  }
+  .filter:hover p {
     color: #222222;
   }
   .filter.active {
     opacity: 1;
-    border-bottom: 2px solid #222222;
-    border-radius: 0;
+    background: #f7f7f7;
+    border-color: #222222;
+  }
+  .filter.active i,
+  .filter.active p {
+    color: #222222;
   }
   .tax-info{
     display:none;
   }
   .tax-toggle{
     border: 1px solid #dddddd;
-    border-radius: 12px;
-    padding: 12px 16px;
+    border-radius: 24px;
+    padding: 10px 16px;
     margin-left: auto;
     display: flex;
     align-items: center;
     background-color: white;
     transition: all 0.2s ease;
+    white-space: nowrap;
   }
   .tax-toggle:hover {
     border-color: #222222;
   }
   .form-check-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     margin-left: 8px;
+    color: #222222;
   }
   .listing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px 24px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px 24px;
     padding: 0;
+  }
+  
+  /* Results Header */
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ebebeb;
+  }
+  .results-count {
+    font-size: 15px;
+    color: #717171;
+  }
+  .results-count strong {
+    color: #222222;
+    font-weight: 600;
+  }
+  
+  /* Pagination */
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 48px;
+    padding: 20px 0;
+  }
+  .pagination-info {
+    text-align: center;
+    color: #717171;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    background: white;
+    color: #222222;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .page-btn:hover {
+    border-color: #222222;
+    background: #f7f7f7;
+    color: #222222;
+  }
+  .page-btn.active {
+    background: #222222;
+    border-color: #222222;
+    color: white;
+  }
+  .page-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .page-btn i {
+    font-size: 12px;
+  }
+  .page-dots {
+    color: #717171;
+    padding: 0 4px;
+  }
+  @media (max-width: 992px) {
+    .advanced-filters {
+      gap: 16px;
+      padding: 20px;
+    }
+    .filter-group {
+      min-width: calc(50% - 10px);
+    }
   }
   @media (max-width: 768px) {
     .listing-grid {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 32px 16px;
     }
+    .advanced-filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .filter-group {
+      min-width: 100%;
+    }
+    .filter-buttons {
+      padding-top: 8px;
+      justify-content: stretch;
+    }
+    .btn-apply, .btn-reset {
+      flex: 1;
+      justify-content: center;
+    }
+    #filters {
+      gap: 4px;
+      padding: 12px 0;
+    }
+    .filter {
+      padding: 10px 12px;
+      min-width: 60px;
+    }
+    .filter i {
+      font-size: 20px;
+    }
+    .filter p {
+      font-size: 10px;
+    }
   }
 </style>
+
+<!-- Advanced Filter Bar -->
+<form class="advanced-filters" action="/listings" method="GET" id="filterForm">
+  <div class="filter-group">
+    <label for="minPrice">Min Price</label>
+    <input type="number" name="minPrice" id="minPrice" placeholder="₹0" min="0" value="<%= typeof filters !== 'undefined' && filters.minPrice ? filters.minPrice : '' %>">
+  </div>
+  <div class="filter-group">
+    <label for="maxPrice">Max Price</label>
+    <input type="number" name="maxPrice" id="maxPrice" placeholder="Any" min="0" value="<%= typeof filters !== 'undefined' && filters.maxPrice ? filters.maxPrice : '' %>">
+  </div>
+  <div class="filter-group">
+    <label for="category">Category</label>
+    <select name="category" id="categorySelect">
+      <option value="">All</option>
+      <option value="Trending" <%= typeof filters !== 'undefined' && filters.category === 'Trending' ? 'selected' : '' %>>Trending</option>
+      <option value="Rooms" <%= typeof filters !== 'undefined' && filters.category === 'Rooms' ? 'selected' : '' %>>Rooms</option>
+      <option value="Iconic Cities" <%= typeof filters !== 'undefined' && filters.category === 'Iconic Cities' ? 'selected' : '' %>>Iconic Cities</option>
+      <option value="Mountains" <%= typeof filters !== 'undefined' && filters.category === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+      <option value="Castles" <%= typeof filters !== 'undefined' && filters.category === 'Castles' ? 'selected' : '' %>>Castles</option>
+      <option value="Amazing Pools" <%= typeof filters !== 'undefined' && filters.category === 'Amazing Pools' ? 'selected' : '' %>>Amazing Pools</option>
+      <option value="Camping" <%= typeof filters !== 'undefined' && filters.category === 'Camping' ? 'selected' : '' %>>Camping</option>
+      <option value="Farms" <%= typeof filters !== 'undefined' && filters.category === 'Farms' ? 'selected' : '' %>>Farms</option>
+      <option value="Arctic" <%= typeof filters !== 'undefined' && filters.category === 'Arctic' ? 'selected' : '' %>>Arctic</option>
+      <option value="Domes" <%= typeof filters !== 'undefined' && filters.category === 'Domes' ? 'selected' : '' %>>Domes</option>
+      <option value="Boats" <%= typeof filters !== 'undefined' && filters.category === 'Boats' ? 'selected' : '' %>>Boats</option>
+      <option value="Beach" <%= typeof filters !== 'undefined' && filters.category === 'Beach' ? 'selected' : '' %>>Beach</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="sort">Sort</label>
+    <select name="sort" id="sortSelect">
+      <option value="" <%= typeof filters !== 'undefined' && filters.sort === '' ? 'selected' : '' %>>Default</option>
+      <option value="price_asc" <%= typeof filters !== 'undefined' && filters.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+      <option value="price_desc" <%= typeof filters !== 'undefined' && filters.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+      <option value="newest" <%= typeof filters !== 'undefined' && filters.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+    </select>
+  </div>
+  <div class="filter-buttons">
+    <button type="submit" class="btn-apply">Apply</button>
+    <a href="/listings" class="btn-reset">Reset</a>
+  </div>
+</form>
 <div id="filters">
-  <div class="filter">
+  <a href="/listings/filter/Trending" class="filter <%= currentCategory === 'Trending' ? 'active' : '' %>">
     <div><i class="fa-solid fa-fire"></i></div>
     <p>Trending</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Rooms" class="filter <%= currentCategory === 'Rooms' ? 'active' : '' %>">
     <div><i class="fa-solid fa-bed"></i></div>
     <p>Rooms</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Iconic Cities" class="filter <%= currentCategory === 'Iconic Cities' ? 'active' : '' %>">
     <div><i class="fa-solid fa-mountain-city"></i></div>
     <p>Iconic Cities</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Mountains" class="filter <%= currentCategory === 'Mountains' ? 'active' : '' %>">
     <div><i class="fa-solid fa-mountain"></i></div>
     <p>Mountains</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Castles" class="filter <%= currentCategory === 'Castles' ? 'active' : '' %>">
     <div><i class="fa-brands fa-fort-awesome"></i></div>
     <p>Castles</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Amazing Pools" class="filter <%= currentCategory === 'Amazing Pools' ? 'active' : '' %>">
     <div><i class="fa-solid fa-person-swimming"></i></div>
     <p>Amazing Pools</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Camping" class="filter <%= currentCategory === 'Camping' ? 'active' : '' %>">
     <div><i class="fa-solid fa-campground"></i></div>
     <p>Camping</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Farms" class="filter <%= currentCategory === 'Farms' ? 'active' : '' %>">
     <div><i class="fa-solid fa-cow"></i></div>
     <p>Farms</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Arctic" class="filter <%= currentCategory === 'Arctic' ? 'active' : '' %>">
     <div><i class="fa-regular fa-snowflake"></i></div>
     <p>Arctic</p>
-  </div>
-   <div class="filter">
+  </a>
+  <a href="/listings/filter/Domes" class="filter <%= currentCategory === 'Domes' ? 'active' : '' %>">
     <div><i class="fa-solid fa-igloo"></i></div>
     <p>Domes</p>
-  </div>
-  <div class="filter">
+  </a>
+  <a href="/listings/filter/Boats" class="filter <%= currentCategory === 'Boats' ? 'active' : '' %>">
     <div><i class="fa-solid fa-ship"></i></div>
     <p>Boats</p>
-  </div>
+  </a>
+  <a href="/listings/filter/Beach" class="filter <%= currentCategory === 'Beach' ? 'active' : '' %>">
+    <div><i class="fa-solid fa-umbrella-beach"></i></div>
+    <p>Beach</p>
+  </a>
   <div class="tax-toggle">
     <div class="form-check-reverse form-switch">
       <input
@@ -132,35 +409,100 @@
     </div>
   </div>
 </div>
+
+<div class="results-header">
+  <p class="results-count">
+    <% if (typeof pagination !== 'undefined') { %>
+      Showing <strong><%= pagination.totalListings %></strong> places to stay
+      <% if (searchQuery) { %> for "<strong><%= searchQuery %></strong>"<% } %>
+      <% if (currentCategory) { %> in <strong><%= currentCategory %></strong><% } %>
+    <% } %>
+  </p>
+  <% if (searchQuery || currentCategory) { %>
+  <a href="/listings" style="color: #fe424d; text-decoration: none; font-weight: 500; font-size: 14px;">
+    <i class="fa-solid fa-xmark"></i> Clear filters
+  </a>
+  <% } %>
+</div>
+
 <div class="listing-grid">
   <% for(let listing of allListings){%>
   <a href="/listings/<%=listing._id%>" class="listing-link">
     <div class="listing-card">
-      <div style="position: relative; overflow: hidden; border-radius: 12px;">
+      <div class="card-img-container">
+        <!-- Location Tags -->
+        <div class="location-tags">
+          <span class="location-tag">
+            <i class="fa-solid fa-location-dot"></i>
+            <%= listing.location %>
+          </span>
+          <span class="location-tag">
+            <%= listing.country %>
+          </span>
+        </div>
         <img
-          src="<%=listing.image.url %>"
+          src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=60' %>"
           class="card-img-top"
           alt="<%=listing.title%>"
         />
         <div class="card-img-overlay"></div>
       </div>
       <div class="card-body">
-        <p class="card-text" style="margin-bottom: 4px;">
+        <p class="card-text" style="margin-bottom: 6px;">
           <b><%=listing.title%></b>
         </p>
-        <p class="card-text" style="color: #717171; font-size: 14px; margin-bottom: 8px;">
-          <%=listing.location%>, <%=listing.country%>
-        </p>
-        <p class="card-text" style="margin-bottom: 0;">
-          <span style="font-weight: 600;">&#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %></span>
-          <span style="color: #717171; font-weight: 400;"> / night</span>
-          <span class="tax-info" style="color: #717171; font-size: 13px;">&nbsp;+18% GST</span>
+        <p class="card-price">
+          &#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %>
+          <span>/ night</span>
+          <span class="tax-info">&nbsp;+18% GST</span>
         </p>
       </div>
     </div>
   </a>
   <%}%>
 </div>
+
+<% if (typeof pagination !== 'undefined' && pagination.totalPages > 1) { %>
+<div class="pagination-wrapper">
+  <p class="pagination-info">
+    Showing <%= ((pagination.currentPage - 1) * 12) + 1 %> - <%= Math.min(pagination.currentPage * 12, pagination.totalListings) %> of <%= pagination.totalListings %> listings
+  </p>
+  <div class="pagination-container">
+    <!-- Previous Button -->
+    <a href="?<%= currentCategory ? '' : 'minPrice=' + (filters.minPrice || '') + '&maxPrice=' + (filters.maxPrice || '') + '&category=' + (filters.category || '') + '&sort=' + (filters.sort || '') + '&' %>page=<%= pagination.currentPage - 1 %>" 
+       class="page-btn <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
+      <i class="fa-solid fa-chevron-left"></i>
+    </a>
+    
+    <!-- Page Numbers -->
+    <% 
+      let startPage = Math.max(1, pagination.currentPage - 2);
+      let endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+    %>
+    
+    <% if (startPage > 1) { %>
+      <a href="?<%= currentCategory ? '' : 'minPrice=' + (filters.minPrice || '') + '&maxPrice=' + (filters.maxPrice || '') + '&category=' + (filters.category || '') + '&sort=' + (filters.sort || '') + '&' %>page=1" class="page-btn">1</a>
+      <% if (startPage > 2) { %><span class="page-dots">...</span><% } %>
+    <% } %>
+    
+    <% for (let i = startPage; i <= endPage; i++) { %>
+      <a href="?<%= currentCategory ? '' : 'minPrice=' + (filters.minPrice || '') + '&maxPrice=' + (filters.maxPrice || '') + '&category=' + (filters.category || '') + '&sort=' + (filters.sort || '') + '&' %>page=<%= i %>" 
+         class="page-btn <%= i === pagination.currentPage ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+    
+    <% if (endPage < pagination.totalPages) { %>
+      <% if (endPage < pagination.totalPages - 1) { %><span class="page-dots">...</span><% } %>
+      <a href="?<%= currentCategory ? '' : 'minPrice=' + (filters.minPrice || '') + '&maxPrice=' + (filters.maxPrice || '') + '&category=' + (filters.category || '') + '&sort=' + (filters.sort || '') + '&' %>page=<%= pagination.totalPages %>" class="page-btn"><%= pagination.totalPages %></a>
+    <% } %>
+    
+    <!-- Next Button -->
+    <a href="?<%= currentCategory ? '' : 'minPrice=' + (filters.minPrice || '') + '&maxPrice=' + (filters.maxPrice || '') + '&category=' + (filters.category || '') + '&sort=' + (filters.sort || '') + '&' %>page=<%= pagination.currentPage + 1 %>" 
+       class="page-btn <%= !pagination.hasNextPage ? 'disabled' : '' %>">
+      <i class="fa-solid fa-chevron-right"></i>
+    </a>
+  </div>
+</div>
+<% } %>
 
 <script>
     let taxSwitch=document.getElementById("switchCheckDefault");
