@@ -1,0 +1,125 @@
+<style>
+  .btn-search {
+    background-color: #fe424d;
+    color: #fff;
+    border-radius: 24px;
+    padding: 10px 20px;
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    white-space: nowrap;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .btn-search:hover {
+    background-color: #e6000f;
+    color: #fff;
+    transform: scale(1.02);
+  }
+  .search-input{
+    border-radius: 24px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: 1px solid #dddddd;
+    transition: all 0.2s ease;
+  }
+  .search-input:focus {
+    border-color: #222222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .navbar-brand {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fe424d !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .navbar-brand:hover {
+    color: #e6000f !important;
+  }
+</style>
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <i class="fa-regular fa-compass"></i>
+      <span>HopperStay</span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div
+      class="collapse navbar-collapse"
+      id="navbarNavAltMarkup"
+    >
+      <div class="navbar-nav">
+        <a
+          class="nav-link"
+          href="/listings"
+          >Explore</a
+        >
+        <a
+          class="nav-link"
+          href="/itinerary"
+          ><i class="fa-solid fa-route"></i> Create Itinerary</a
+        >
+      </div>
+      <% if (!locals.isHomePage) { %>
+      <div class="navbar-nav ms-auto">
+        <form
+          class="d-flex"
+          role="search"
+          action="/listings/search"
+          method="GET"
+        >
+          <input
+            class="form-control me-2 search-input"
+            type="search"
+            name="q"
+            placeholder="Search destinations"
+          />
+          <button
+            class="btn btn-search"
+            type="submit"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search
+          </button>
+        </form>
+      </div>
+      <% } %>
+      <div class="navbar-nav ms-auto">
+        <a
+          class="nav-link"
+          href="/listings/new"
+          >Host on HopperStay</a
+        >
+        <%if(!locals.currentUser){ %>
+        <a
+          class="nav-link"
+          href="/signup"
+          ><b>Sign Up</b></a
+        >
+        <a
+          class="nav-link"
+          href="/login"
+          ><b>Log In</b></a
+        >
+        <%}%> <% if(locals.currentUser){ %>
+        <a
+          class="nav-link"
+          href="/logout"
+          ><b>Log Out</b></a
+        >
+        <%}%>
+      </div>
+    </div>
+  </div>
+</nav>

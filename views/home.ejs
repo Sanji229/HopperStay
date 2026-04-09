@@ -1,0 +1,302 @@
+<% layout("/layouts/boilerplate")%>
+<style>
+  /* Hero Section */
+  .hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #fe424d 100%);
+    margin: -20px -12px 0;
+    padding: 60px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920') center/cover;
+    opacity: 0.2;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+  }
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.1;
+  }
+  .hero p {
+    font-size: 20px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  .hero-search {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-search input {
+    padding: 16px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 50px;
+    width: 350px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .hero-search input:focus {
+    outline: none;
+  }
+  .hero-search button {
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #222222;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-search button:hover {
+    background: #000000;
+    transform: translateY(-2px);
+  }
+
+  /* Categories Section */
+  .categories {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .section-title h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #222222;
+    margin-bottom: 12px;
+  }
+  .section-title p {
+    color: #717171;
+    font-size: 18px;
+  }
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  .category-card {
+    position: relative;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .category-card:hover img {
+    transform: scale(1.1);
+  }
+  .category-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  }
+  .category-card span {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    z-index: 1;
+  }
+
+  /* Explore CTA */
+  .explore-cta {
+    text-align: center;
+    margin-top: 40px;
+  }
+  .explore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 44px;
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(254, 66, 77, 0.3);
+  }
+  .explore-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(254, 66, 77, 0.5);
+    color: white;
+  }
+
+  /* CTA Section */
+  .cta {
+    padding: 80px 20px;
+    background: #222222;
+    margin: 0 -12px;
+    text-align: center;
+  }
+  .cta h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 16px;
+  }
+  .cta p {
+    color: rgba(255,255,255,0.7);
+    font-size: 18px;
+    margin-bottom: 32px;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #fe424d 0%, #e6000f 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(254, 66, 77, 0.4);
+    color: white;
+  }
+  .cta-btn.outline {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.5);
+  }
+  .cta-btn.outline:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.08);
+    box-shadow: none;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 36px;
+    }
+    .hero p {
+      font-size: 16px;
+    }
+    .hero-search {
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-search input {
+      width: 100%;
+      max-width: 350px;
+    }
+    .section-title h2 {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<!-- Hero Section -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>Find Your Perfect Stay</h1>
+    <p>Discover unique homes, experiences, and places around the world. Your next adventure starts here.</p>
+    <form class="hero-search" action="/listings/search" method="GET">
+      <input type="text" name="q" placeholder="Where do you want to go?" required>
+      <button type="submit">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Search
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Categories Section -->
+<div class="categories">
+  <div class="section-title">
+    <h2>Explore by Category</h2>
+    <p>Find the perfect place based on your travel style</p>
+  </div>
+  <div class="categories-grid">
+    <a href="/listings/filter/Beach" class="category-card">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" alt="Beach">
+      <span>Beach</span>
+    </a>
+    <a href="/listings/filter/Mountains" class="category-card">
+      <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Mountains">
+      <span>Mountains</span>
+    </a>
+    <a href="/listings/filter/Camping" class="category-card">
+      <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400" alt="Camping">
+      <span>Camping</span>
+    </a>
+    <a href="/listings/filter/Castles" class="category-card">
+      <img src="https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=400" alt="Castles">
+      <span>Castles</span>
+    </a>
+    <a href="/listings/filter/Amazing Pools" class="category-card">
+      <img src="https://images.unsplash.com/photo-1572331165267-854da2b10ccc?w=400" alt="Amazing Pools">
+      <span>Amazing Pools</span>
+    </a>
+    <a href="/listings/filter/Iconic Cities" class="category-card">
+      <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400" alt="Iconic Cities">
+      <span>Iconic Cities</span>
+    </a>
+  </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta">
+  <h2>Your Next Adventure Awaits</h2>
+  <p>Discover unique stays or earn by sharing your space with travelers</p>
+  <div class="cta-buttons">
+    <a href="/listings" class="cta-btn outline">
+      <i class="fa-solid fa-compass"></i>
+      Explore Listings
+    </a>
+    <a href="/listings/new" class="cta-btn">
+      <i class="fa-solid fa-house"></i>
+      Start Hosting
+    </a>
+  </div>
+</div>
